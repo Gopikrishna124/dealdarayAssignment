@@ -1,6 +1,9 @@
 const User=require('../Models/Usermodel').module
 const Address=require('../Models/AddressModel').module
 
+//sample images of user-table and address-table which i
+// stored in mongodb are in assets folder in backend section 
+
 
 const StoringData=async(req,res)=>{
     const {userAddress,userName}=req.body
