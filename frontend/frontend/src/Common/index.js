@@ -36,6 +36,10 @@ const summaryApi = {
   searchBook:{
     url:`${backend}/api/v1/books/search`,
     method:'get'
+  },
+  logout:{
+     url:`${backend}/api/v1/users/logout`,
+    method:'post'
   }
 };
 

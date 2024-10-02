@@ -8,9 +8,13 @@ import UserProfile from '../Pages/Profile/UserProfile'
 import AdminPage from '../Pages/Admin/AdminPage'
 import BooksDetailsPage from '../Pages/bookDetails/BooksDetailsPage'
 import SearchProduct from '../Pages/SearchProduct/SearchProduct'
+import { useSelector } from 'react-redux'
+import { selectAuth } from '../Redux/UserDetailsSlice'
+
 
 
 const router=createBrowserRouter([
+  
     {
         path:'/',
         element:<App/>,
@@ -50,5 +54,6 @@ const router=createBrowserRouter([
         ]
     }
 ])
+
 
 export default router

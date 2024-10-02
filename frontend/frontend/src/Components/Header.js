@@ -5,35 +5,57 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserDetails, selectUserDetails } from "../Redux/UserDetailsSlice.js";
+import summaryApi from "../Common/index.js";
 import { reset } from "../Redux/UserDetailsSlice.js";
+
 
 function Header() {
   const [search, setSearch] = useState('');
   const dispatch=useDispatch()
   
   const userInfo = useSelector(selectUserDetails);
+
   
   const navigate=useNavigate()
   
 
   function handleSearch(e) {
     const {value}=e.target
-    setSearch(value)
+    setSearch(e.target.value)
        navigate(`/search?q=${value}`)
   }
 
-  function handleLogout() {
-    dispatch(reset())
+  async function handleLogout() {
+     const response=await fetch(summaryApi.logout.url,{
+      method:summaryApi.logout.method,
+      credentials:'include'
+     })
+     const data=await response.json()
+     console.log('logdata',data)
+     if(data.success){
+      dispatch(reset())
+     }
+     console.log('userINfoHeder',userInfo)
   }
 
+  // useEffect(()=>{
+  //  dispatch(fetchUserDetails())
+  // },[dispatch,userInfo?._id])
  
   return (
     <div className="w-[430px] max-w-[430px] md:w-[100%] md:max-w-[100%] h-[80px] md:h-[100px] bg-[#94618E] ">
       <div className="w-full max-w-full md:w-[80%] md:max-w-[80%] flex justify-between items-center   md:mx-[10%] my-auto md:p-3">
         <div>
-          <Link to="/">
+          {
+            userInfo?._id ?
+            <Link to="/">
+            <Logo />
+          </Link> :
+            <Link to="/login">
             <Logo />
           </Link>
+          }
+          
         </div>
 
         <div className="hidden lg:flex items-center w-full justify-between max-w-lg border rounded-full focus-within:shadow pl-3 border-blue-200 ">
@@ -50,7 +72,7 @@ function Header() {
         </div>
 
         <div className=" w-[250px] md:w-[500px] md:ml-6 flex md:justify-between">
-          {userInfo.Role === "Admin" && (
+          {userInfo?.Role === "Admin" && (
             <Link to="/admin" className="my-4 w-[180px]">
               <button className=" hidden md:block md:w-[130px] md:h-[50px] bg-[#F8EEE7] text-black md:text-xl rounded-md hover:bg-black hover:text-white ml-[40px] md:ml-[0px]">
                 Admin

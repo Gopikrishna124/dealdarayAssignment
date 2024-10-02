@@ -6,19 +6,33 @@ import {useDispatch, useSelector} from 'react-redux'
 import { fetchBookDetails } from '../../Redux/BookSlicer'
 import { selectBookDetails } from '../../Redux/BookSlicer'
 import ProductCard from '../../Components/ProductCard'
+import { useNavigate } from 'react-router-dom'
 
 function Home() {
     
   const dispatch=useDispatch()
   const userInfo=useSelector(selectUserDetails)
+  const navigate=useNavigate()
   // console.log('userInfo',userInfo)
   const booksInfo=useSelector(selectBookDetails)
   // console.log('booksInfo',booksInfo)
   ///////////////////////////////////
+  // if(!userInfo[0]?.length){
+  //   navigate("/register")
+  // }
+
+  // if(!userInfo[0]?.length){
+  //   navigate('/login')
+  // }
+
   useEffect(()=>{
+  
      dispatch(fetchUserDetails())
      dispatch(fetchBookDetails())
+
   },[dispatch,userInfo?._id,booksInfo?.length])
+
+  
 
 /////////////////////////////////////
   

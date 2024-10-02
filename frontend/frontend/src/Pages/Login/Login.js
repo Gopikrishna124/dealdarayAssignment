@@ -6,7 +6,7 @@ import summaryApi from "../../Common";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { fetchUserDetails } from "../../Redux/UserDetailsSlice";
-
+import { authReset } from "../../Redux/UserDetailsSlice";
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [data, setData] = useState({
@@ -55,7 +55,7 @@ function Login() {
             };
           });
           toast.success("login successful");
-         
+           
           navigate("/");
         } else {
           throw userdata.message;
