@@ -1,9 +1,11 @@
 const express=require('express')
-const mongoose=require('mongoose')
 const dotenv=require('dotenv').config()
-const app=express()
-const port=process.env.PORT
 const cors=require('cors')
+const Connection=require('./db/Connection').module
+const cookieParser=require('cookie-parser')
+
+const port=process.env.PORT
+const app=express()
 app.use(express.json())
 app.use(cors({
     origin:'http://localhost:3001' ,   
@@ -14,17 +16,13 @@ app.use(cors({
 
 }))
 
-const Userrouter=require('./Routes/routes').module
+app.use(cookieParser())
 
 
-const Connection=async(req,res)=>{
-    try {
-        await mongoose.connect(process.env.MONGODB_URL)
-        console.log('database conncected')
-    } catch (err) {
-        console.log(err)
-    }
-}
+
+
+
+//connection to mongodb
 
 Connection().then(()=>{
     app.listen(port,()=>{
@@ -33,4 +31,12 @@ Connection().then(()=>{
     })
 })
 
-app.use('/api/v1',Userrouter)
+
+//routes
+const BookRouter=require('./Routes/Book/BookRoutes').module
+const ReviewRouter=require('./Routes/Reviews/ReviewRoutes').module
+const userRouter=require('./Routes/User/UserRoutes').module
+
+app.use('/api/v1/books',BookRouter)
+app.use('/api/v1/reviews',ReviewRouter)
+app.use('/api/v1/users',userRouter)
