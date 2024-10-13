@@ -3,7 +3,7 @@ const env=require('dotenv').config()
 
 async function authToken(req,res,next){
     try{
-        const token=req.cookies?.AssignCookie
+        const token=req.cookies?.NaukariCookie
        
 
        if(!token){

@@ -2,43 +2,39 @@ const backend = "http://localhost:4001";
 
 const summaryApi = {
   register: {
-    url: `${backend}/api/v1/users/register`,
+    url: `${backend}/api/v1/auth/register`,
     method: "post",
   },
   login: {
-    url: `${backend}/api/v1/users/login`,
+    url: `${backend}/api/v1/auth/login`,
     method: "post",
   },
   userDetails:{
-    url:`${backend}/api/v1/users/userDetails`,
-    method:"get"
-  },
-  bookDetails:{
-    url:`${backend}/api/v1/books`,
+    url:`${backend}/api/v1/auth/userDetails`,
     method:'get'
   },
-  paramsBookDetails:{
-    url:`${backend}/api/v1/books`,
-    method:'get'
-  },
-  addreview:{
-    url:`${backend}/api/v1/reviews`,
+  createEmployee:{
+    url:`${backend}/api/v1/employees`,
     method:'post'
   },
-  getreviews:{
-    url:`${backend}/api/v1/reviews`,
+  getEmployeeDetails:{
+    url:`${backend}/api/v1/employees`,
     method:'get'
   },
-  updateUser:{
-    url:`${backend}/api/v1/users`,
+  searchEmployee:{
+    url:`${backend}/api/v1/employees/find/searchEmployee`,
+    method:'get'
+  },
+  deleteEmployee:{
+  url:`${backend}/api/v1/employees/delete`,
+  method:'post'
+  },
+  EditEmployee:{
+    url:`${backend}/api/v1/employees/edit`,
     method:'post'
   },
-  searchBook:{
-    url:`${backend}/api/v1/books/search`,
-    method:'get'
-  },
-  logout:{
-     url:`${backend}/api/v1/users/logout`,
+  LogOut:{
+    url:`${backend}/api/v1/auth/logout`,
     method:'post'
   }
 };

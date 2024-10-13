@@ -1,203 +1,161 @@
-import React, { useState } from "react";
-import { FaEye , FaRegEyeSlash} from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useRef } from "react";
+import Logo from "../../Components/Logo";
+import { FaRegEyeSlash, FaEye } from "react-icons/fa";
 import { toast } from "react-toastify";
-import summaryApi from '../../Common/index.js';
+import summaryApi from "../../Common/index";
+import { Navigate, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Register() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword,setShowConfirmPassword]=useState(false)
+  const inputField1 = useRef(null);
+  const inputField2 = useRef(null);
+
   const [data, setData] = useState({
-    FullName: "",
-    Email: "",
+    UserName: "",
     Password: "",
-    ConfirmPassword: "",
-    
   });
-  console.log('data',data)
-
-
-  const [err, seterr] = useState({
-    Email: "",
+  const [err, setErr] = useState({
+    UserName: "",
     Password: "",
-    FullName: "",
-    ConfirmPassword: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate=useNavigate()
-  ////////////////////////////////////
-  function changeInput(e) {
-    const { name, value } = e.target;
 
+  ////////////////////////////////////////////////////////////////////
+
+  const changeInput = (name, value, inputRef) => {
     setData((prev) => {
       return {
         ...prev,
         [name]: value,
       };
     });
-  }
-  /////////////////////////////
-  
-  
-  //////////////////////
- async function handleSubmit(e) {
-    e.preventDefault();
-    console.log('clicked button')
 
-  for(let key in data){
-    if(data[key].length<Number(8)){
-        seterr((prev)=>{
-    
-            return{
-              ...prev,
-              [key]:`${key} must be atleast 8 characters`
-            } 
-          })
-    }
-    else{
-     seterr((prev)=>{
+    // const usernameRegex = /^(?=.*[a-zA-Z])[\w]{3,}$/;
+    const usernameRegex = /^[a-zA-Z0-9\s!@#$%^&*(),.?":{}|<>]+$/
+
+    if (!usernameRegex.test(value) || value.length < 7) {
+      setErr((prev) => {
         return {
-            ...prev,
-            [key]:''
+          ...prev,
+          [name]: `${name} Username can contain letters, numbers, spaces, and special characters and atleast 8 characters`,
+        };
+      });
+    } else {
+      setErr((prev) => {
+        return {
+          ...prev,
+          [name]: "",
+        };
+      });
+    }
+  };
+
+  //////////////////////////////////////////////////////////
+
+  const moveToNextRef = (e, value, inputRef) => {
+    if (e.key === "Enter" && value.length > 7) {
+      e.preventDefault();
+      inputRef.current.focus();
+    }
+  };
+  ////////////////////////////////////////////////
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+
+    let move = "";
+    for (let key in data) {
+      if (data[key] === "") {
+        move = false;
+      }
+    }
+
+
+    if (move === false) {
+      toast.error("all fileds must be filled correctly");
+    } else {
+        try{
+            const response=await fetch(summaryApi.register.url,{
+               method:summaryApi.register.method,
+               headers:{
+                'content-type':'application/json',
+               },
+               body:JSON.stringify({UserName:data.UserName,Password:data.Password})
+            })
+            
+            const resposneData=await response.json()
+            console.log('userData',resposneData)
+            if(resposneData.success){
+              toast.success('user registered successfully')
+              setData((prev)=>{
+                return{
+                  UserName:'',
+                  Password:''
+                }
+              })
+
+              navigate('/login')
+            }    
+        
         }
-     })
+        catch(err){
+          toast.error(err)
+        }
     }
-  }
- 
-  data.Password !== data.ConfirmPassword ?
-  seterr((prev) => {
-    return {
-      ...prev,
-      ConfirmPassword: "confirm password is not matching",
-    };
-  }) :
-  seterr((prev)=>{
-      
-    return{
-      ...prev,
-      ConfirmPassword:''
-    }
-    
-  })
-
-  if (data.FullName.length >= Number(8) &&data.Password.length >= Number(8) &&data.Password === data.ConfirmPassword){
-
- try{
-    const response = await fetch(summaryApi.register.url, {
-      method: summaryApi.register.method,
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({FullName:data.FullName,Email:data.Email,Password:data.Password}),
-    });
-    
- 
-  const userdata = await response.json();
-  console.log(userdata)
-  if(userdata.success){
-  seterr((prev) => {
-    return {
-      ...prev,
-      name: "",
-      password: "",
-      email: "",
-      confirmPassword: "",
-    };
-  });
-
-  setData((prev) => {
-    return {
-      ...prev,
-      FullName: "",
-      Password: "",
-      Email: "",
-      ConfirmPassword: "",
-    };
-  });
-  // toast.success(userdata.message)
-  toast.success ('user created successfully')
-  navigate('/login')
-  console.log(userdata)
-
- }
- else{
-  throw userdata.message
- }
-    
-  }
-  catch(err){
-    console.log(err)
-   
-    toast.error(err)
-  }
-
-    }
-
-}
+  };
   return (
-    <div className="my-[200px] md:my-[220px] lg:my-[150px]">
-      <div className="w-[430px] max-w-[430px] my-4 md:my-0  md:w-[100%] md:max-w-[100%] h-[calc(100vh-300px)] md:h-[calc(100vh-250px)] flex justify-center items-center top-0 right-0 bottom-0 left-0">
-        <div className="bg-[#94618E] w-[300px] h-[650px] md:w-[500px] md:h-[800px]  opacity-70 rounded-md">
-          <form  className="w-full">
-            <h2 className="text-center text-xl md:text-3xl font-medium text-white my-3 border-b-2 mx-4">
-              Register
+    <div>
+      <div>
+        <Logo />
+      </div>
+
+      <div className=" flex justify-center items-center top-0 right-0 bottom-0 left-0">
+        <div className="bg-[#94618E] w-[500px] h-[650px] opacity-70 rounded-md">
+          <form className="w-full" onSubmit={handleSubmit}>
+            <h2 className="text-center  text-3xl font-medium text-white my-3 border-b-2 mx-4">
+              REGISTER
             </h2>
 
             <div className="w-full my-7 mx-4">
-              <label
-                htmlFor="fullName"
-                className="text-white text-lg md:text-2xl"
-              >
-                Full Name:
+              <label htmlFor="UserName" className="text-white text-2xl">
+                UserName :
               </label>
               <div className="w-full my-3">
                 <input
+                  ref={inputField1}
                   type="text"
-                  id="fullName"
-                  name="FullName"
-                  placeholder="Enter your Full Name"
-                  value={data.FullName}
-                  className="w-[80%]  md:w-[90%] h-[30px] md:h-[50px] outline-none rounded-xl placeholder-[#94618E] md:text-xl"
-                  onChange={changeInput}
+                  id="UserName"
+                  name="UserName"
+                  placeholder="Enter your User Name"
+                  value={data.UserName}
+                  className="w-[90%] h-[50px] outline-none rounded-xl placeholder-[#94618E] text-xl"
+                  onChange={(e) => changeInput(e.target.name, e.target.value)}
+                  onKeyDown={(e) =>
+                    moveToNextRef(e, e.target.value, inputField2)
+                  }
                 />
               </div>
-              <p className="text-black mb-1 ml-2 ">{err.FullName && err.FullName}</p>
+              <p className="text-black mb-1 ml-2 font-bold max-w-[400px] ">
+                {err.UserName && err.UserName}
+              </p>
             </div>
 
             <div className="w-full my-7 mx-4">
-              <label htmlFor="Email" className="text-white text-lg md:text-2xl">
-                Email:
-              </label>
-              <div className="w-full my-3">
-                <input
-                  type="Email"
-                  id="Email"
-                  name="Email"
-                  placeholder="Enter your Email"
-                  value={data.Email}
-                  className="w-[80%]  md:w-[90%] h-[30px] md:h-[50px] outline-none rounded-xl placeholder-[#94618E] md:text-xl"
-                  onChange={changeInput}
-                />
-              </div>
-              
-            </div>
-
-            <div className="w-full my-7 mx-4">
-              <label
-                htmlFor="Password"
-                className="text-white text-lg  md:text-2xl"
-              >
+              <label htmlFor="Password" className="text-white text-2xl">
                 Password :
               </label>
               <div className="w-full my-3 flex items-center">
                 <input
                   type={showPassword ? "text" : "password"}
+                  ref={inputField2}
                   id="Password"
                   name="Password"
                   placeholder="Enter your Password"
                   value={data.Password}
-                  className="w-[80%] md:w-[90%] h-[30px] md:h-[50px] outline-none rounded-xl placeholder-[#94618E] md:text-xl"
-                  onChange={changeInput}
+                  className="w-[90%] h-[50px] outline-none rounded-xl placeholder-[#94618E] text-xl"
+                  onChange={(e) => changeInput(e.target.name, e.target.value)}
                 />
                 <div
                   className="-ml-8 cursor-pointer"
@@ -205,71 +163,38 @@ function Register() {
                 >
                   {showPassword ? (
                     <span>
-                      <FaEye className="md:text-2xl" />
+                      <FaEye className="text-2xl" />
                     </span>
                   ) : (
                     <span>
-                      <FaRegEyeSlash className="md:text-2xl" />
+                      <FaRegEyeSlash className="text-2xl" />
                     </span>
                   )}
                 </div>
               </div>
-              <p className="text-black mb-1 ml-2 ">{err.Password && err.Password}</p>
+
+              <p className="text-black font-bold mb-1 ml-2 max-w-[400px]">
+                {err.Password && err.Password}
+              </p>
             </div>
 
-            <div className="w-full my-7 mx-4">
-              <label
-                htmlFor="Confirm-Password"
-                className="text-white text-lg  md:text-2xl"
-              >
-                Confirm Password :
-              </label>
-              <div className="w-full my-3 flex items-center">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  id="Confirm-Password"
-                  name="ConfirmPassword"
-                  placeholder="Enter your Confirm Password"
-                  value={data.ConfirmPassword}
-                  className="w-[80%] md:w-[90%] h-[30px] md:h-[50px] outline-none rounded-xl placeholder-[#94618E] md:text-xl"
-                  onChange={changeInput}
-                />
-                <div
-                  className="-ml-8 cursor-pointer"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
-                  {showConfirmPassword ? (
-                    <span>
-                      <FaEye className="md:text-2xl" />
-                    </span>
-                  ) : (
-                    <span>
-                      <FaRegEyeSlash className="md:text-2xl" />
-                    </span>
-                  )}
-                </div>
-              </div>
-              <p className="text-black mb-1 ml-2">
-                    {err.ConfirmPassword && err.ConfirmPassword}
-               </p>
-            </div>
-
-            <div className="w-full my-6 md:my-8 mx-4">
+            <div className="w-full my-8 mx-4">
               <button
-                onClick={handleSubmit}
-                className="w-[80%] h-[30px] md:w-[90%] md:h-[50px] bg-black text-white rounded-full md:text-2xl tracking-wider"
+                type="submit"
+                className="w-[90%] h-[50px] bg-black text-white rounded-full text-2xl tracking-wider"
               >
                 Register
               </button>
             </div>
 
-           
-
             <div>
               <p className="my-5 md:text-xl ml-3 text-white">
                 {" "}
                 already have an account ?{" "}
-                <Link to={"/login"} className="text-black font-bold underline">
+                <Link
+                  to={"/login"}
+                  className="text-black font-bold underline"
+                >
                   Login
                 </Link>
               </p>

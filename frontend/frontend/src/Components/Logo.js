@@ -1,12 +1,14 @@
-import React from 'react'
-// import Myimage from '../Asset/gopi-krishan-high-resolution-logo-black-transparent.png'
-import Myimage from '../Assets/gopi-krishan-high-resolution-logo-black-transparent.png'
+import React from "react";
 
 export default function Logo() {
   return (
     <div>
-        <img src={Myimage}   className='w-[130px] h-[70px]' width='190px' height='170px'/>
+      <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTX56jSvfvOmio8AfZDPUO_XDWmY2TiQcDGWQ&s"
+        width="100px"
+        height="100px"
+        className="mix-blend-multiply text-white"
+      />
     </div>
-
-  )
+  );
 }

@@ -8,7 +8,7 @@ const port=process.env.PORT
 const app=express()
 app.use(express.json())
 app.use(cors({
-    origin:'http://localhost:3001' ,   
+    origin:'http://localhost:3000' ,   
     
     credentials:true,
      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -17,10 +17,6 @@ app.use(cors({
 }))
 
 app.use(cookieParser())
-
-
-
-
 
 //connection to mongodb
 
@@ -32,11 +28,11 @@ Connection().then(()=>{
 })
 
 
-//routes
-const BookRouter=require('./Routes/Book/BookRoutes').module
-const ReviewRouter=require('./Routes/Reviews/ReviewRoutes').module
 const userRouter=require('./Routes/User/UserRoutes').module
+const EmployeeRouter=require('./Routes/EmployeeRoutes/EmployeeRoutes').module
 
-app.use('/api/v1/books',BookRouter)
-app.use('/api/v1/reviews',ReviewRouter)
-app.use('/api/v1/users',userRouter)
+app.use('/api/v1/auth',userRouter)
+app.use('/api/v1/employees',EmployeeRouter)
+
+
+

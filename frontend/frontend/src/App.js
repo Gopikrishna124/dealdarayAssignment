@@ -1,34 +1,53 @@
-
-import "./App.css";
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Outlet, useNavigate } from "react-router-dom";
-import Header from "./Components/Header";
-import { fetchUserDetails, selectAuth, selectUserDetails } from "./Redux/UserDetailsSlice";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
+import Home from "./Pages/Home/Home";
+import Login from "./Pages/Login/Login";
 import { useDispatch, useSelector } from "react-redux";
+import './App.css'
+
+
+import ProtectedRoute from "./Components/ProtectedRoute";
+import Register from "./Pages/Register/Register.js";
+import { fetchUserDetails, selectUserDetails } from "./Redux/userDetailsSlice";
+import EmployeeList from "./Pages/EmployeeList/EmployeeList.js";
 
 function App() {
-  const navigate=useNavigate()
-  const dispatch=useDispatch()
-  const userInfo=useSelector(selectUserDetails)
-  console.log('userINfo',userInfo)
-    
-  useEffect(()=>{
-      dispatch(fetchUserDetails())
-      
-      
-  },[dispatch])
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: (
+        <ProtectedRoute>
+          <Home />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/register",
+      element: <Register />,
+    },
+    {
+      path:'/employee-list',
+      element:<EmployeeList/>
+    },
+  
+  ]);
 
- 
   return (
     <div>
-       <ToastContainer position='top-center'/>
-      <Header/>
-      <Outlet/>
+      <ToastContainer position="top-center" />
+      <RouterProvider router={router} />
     </div>
-  )
+  );
 }
 
 export default App;

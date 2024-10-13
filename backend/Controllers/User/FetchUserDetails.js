@@ -1,11 +1,20 @@
 const User=require('../../Models/userModel').module
-const ApiResponse=require('../../Reusers/ApiResponse').module
+
 
 const fetchUserDetails=async(req,res)=>{
-        console.log('authId',req.user)
+       
     try {
         const result=await User.findById(req.user)
-        res.json(new ApiResponse(result,'details fetched successfully',true))
+      
+          if(!result){
+            throw new Error('pls register')
+          }
+        res.json({
+            data:result,
+            message:'userDeatails fetched successfully',
+            success:true,
+            error:false
+        })
     } catch (err) {
          res.json({
             message:err.message || err,

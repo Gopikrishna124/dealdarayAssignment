@@ -40,3 +40,13 @@
 .scrollbar-none::-webkit-scrollbar{
   display: none;
 }
+
+.usertable{
+  @apply bg-blue-50
+}
+.usertable th{
+  @apply border border-black font-medium p-2 text-2xl
+}
+.usertable td{
+  @apply border text-center  border-black p-4 text-2xl
+}

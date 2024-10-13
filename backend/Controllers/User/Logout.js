@@ -1,11 +1,11 @@
 const UserLogout=async(req,res)=>{
     try{
-      res.clearCookie('AssignCookie')
+      res.clearCookie('NaukariCookie')
       res.json({
         data:[],
         success:true,
         error:false,
-        message:'Logged out Successfull'
+        message:'Logged out Successfuly'
       })
     }
     catch(err){

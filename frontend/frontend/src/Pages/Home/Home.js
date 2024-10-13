@@ -1,58 +1,52 @@
-import React from 'react'
-import { useEffect } from 'react'
-import { fetchUserDetails } from '../../Redux/UserDetailsSlice'
-import { selectUserDetails } from '../../Redux/UserDetailsSlice'
-import {useDispatch, useSelector} from 'react-redux'
-import { fetchBookDetails } from '../../Redux/BookSlicer'
-import { selectBookDetails } from '../../Redux/BookSlicer'
-import ProductCard from '../../Components/ProductCard'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useRef, useEffect } from "react";
+import Logo from "../../Components/Logo";
+import { FaRegEyeSlash, FaEye } from "react-icons/fa";
+import { toast } from "react-toastify";
+import summaryApi from "../../Common/index";
+import { Navigate, useNavigate } from "react-router-dom";
+import {
+  fetchUserDetails,
+  resetUserDetails,
+  selectUserDetails,
+} from "../../Redux/userDetailsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import Header from "../../Components/Header/Header";
 
 function Home() {
-    
   const dispatch=useDispatch()
-  const userInfo=useSelector(selectUserDetails)
+useEffect(()=>{
+   dispatch(fetchUserDetails())
+},[dispatch])
+
+  const userHome = useSelector(selectUserDetails);
+  console.log('userHome',userHome)
   const navigate=useNavigate()
-  // console.log('userInfo',userInfo)
-  const booksInfo=useSelector(selectBookDetails)
-  // console.log('booksInfo',booksInfo)
-  ///////////////////////////////////
-  // if(!userInfo[0]?.length){
-  //   navigate("/register")
-  // }
+  console.log('valiation',userHome?.error)
 
-  // if(!userInfo[0]?.length){
-  //   navigate('/login')
-  // }
 
-  useEffect(()=>{
-  
-     dispatch(fetchUserDetails())
-     dispatch(fetchBookDetails())
-
-  },[dispatch,userInfo?._id,booksInfo?.length])
-
-  
-
-/////////////////////////////////////
-  
-  return (
-    <div className='flex justify-around items-center p-4'>
-    <div className='m-6 grid grid-cols-3 gap-10'>
-     {
-      booksInfo.map((book,index)=>{
-       return (
-        <div>
-       <ProductCard data={book}/>
-       </div>
-        )
-      })
-
-    }
-  </div>
- </div>
+  // if(userHome?.error===true){
+  //   localStorage.removeItem('LoginToken')
+  //     dispatch(resetUserDetails())
    
-  )
+  //   navigate('/register')
+    
+  // } 
+  
+ 
+  console.log("userHome", userHome);
+  return (
+    <div>
+      <Header userDeatils={userHome}  />
+      <div className="m-8 text-3xl text-red-600 p-36">
+        <p>{userHome?.data?.UserName}</p>
+      </div>
+       <div className="flex justify-center items-center 
+        text-3xl 
+       text-red-600">
+          <p>Welcome Admin Panel</p>
+       </div>
+    </div>
+  );
 }
 
-export default Home
+export default Home;

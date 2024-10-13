@@ -1,3 +1,2 @@
-Frontendurl=http://localhost:3001
-
-backendurl=http://localhost:4001
+frontendurl:http://localhost:3000
+backendurl:http://localhost:4001

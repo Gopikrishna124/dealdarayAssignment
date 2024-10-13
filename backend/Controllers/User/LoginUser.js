@@ -1,36 +1,42 @@
 const User = require("../../Models/userModel").module
 const bcrypt=require('bcryptjs')
-const ApiResponse = require("../../Reusers/ApiResponse").module;
+
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv").config();
 
 const LoginUser = async (req, res) => {
-  const { Email, Password } = req.body;
+  const { UserName, Password } = req.body;
   try {
-    const ExistingEmail = await User.findOne({ Email: Email });
+    const ExistingName = await User.findOne({ UserName: UserName});
    
-    if (!ExistingEmail) {
-      throw new Error("no such account exists!");
+    if (!ExistingName) {
+      throw new Error("no such userName exists!");
     }
-   let Matchingpassword =bcrypt.compareSync(Password,ExistingEmail.Password)
+   let Matchingpassword =bcrypt.compareSync(Password,ExistingName.Password)
    
     if(Matchingpassword===true){
 
       const tokenData = {
-        _id: ExistingEmail._id,
-        Email: ExistingEmail.Email,
+        _id: ExistingName._id,
+        UserName: ExistingName.UserName,
       };
 
       const token = await jwt.sign(tokenData, process.env.JWT_SECRET, {
-        expiresIn: "1hr",
+        expiresIn: "10days",
       });
       const tokenOption = {
         httpOnly: true,
         secure: true,
       };
-      res
-        .cookie("AssignCookie", token, tokenOption)
-        .json( new ApiResponse(token, "user login successfull", true));
+     
+      
+        res.cookie("NaukariCookie",token, tokenOption)
+        .json({
+          data:token,
+          message:'login successfull',
+          success:true,
+          error:false
+        });
     }
      else {
       throw new Error("invalid credentials");

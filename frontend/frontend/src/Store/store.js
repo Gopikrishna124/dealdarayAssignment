@@ -1,10 +1,8 @@
-import {configureStore} from '@reduxjs/toolkit'
-import userDetailsReducer from '../Redux/UserDetailsSlice'
-import bookDetailsSlice from '../Redux/BookSlicer'
+import { configureStore } from "@reduxjs/toolkit";
+import userReducer from '../Redux/userDetailsSlice'
 
 export const store=configureStore({
     reducer:{
-         user:userDetailsReducer,
-         book:bookDetailsSlice
+        user:userReducer,  
     }
 })
